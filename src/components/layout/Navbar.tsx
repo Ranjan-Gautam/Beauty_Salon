@@ -20,7 +20,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="w-full bg-[#f9f3f0] border-b border-[#e0cfc8] px-8 h-18 flex items-center  gap-8">
+    <nav className="w-full bg-[#f9f3f0] border-b border-[#e0cfc8] px-8 h-18 flex items-center  gap-8 sticky top-0 z-50">
       <Link href="/" className="flex items-center gap-px no-underline">
         <Image
           src="/logo-beauty-salon-1.png"
