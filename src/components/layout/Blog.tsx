@@ -34,9 +34,7 @@ export default function Blog() {
   return (
     <section className="py-24 bg-[#f7f3f1]">
       <div className="max-w-7xl mx-auto px-8 lg:px-12">
-        <p className="text-[#c48a6a] uppercase text-sm mb-3">
-          Blog
-        </p>
+        <p className="text-[#c48a6a] uppercase text-sm mb-3">Blog</p>
 
         <div className="flex justify-between items-start mb-16">
           <h2 className="text-4xl md:text-6xl font-bold text-[#2f2f2f] max-w-3xl">
@@ -83,8 +81,8 @@ export default function Blog() {
           {posts.map((post, index) => (
             <SwiperSlide key={index}>
               <div className="bg-white overflow-hidden hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
-                <Image 
-                  src={post.image} 
+                <Image
+                  src={post.image}
                   alt={post.title}
                   width={500}
                   height={350}
@@ -101,7 +99,8 @@ export default function Blog() {
                   </div>
 
                   <p className="text-gray-600 leading-7">
-                    At vero eos et accusamus et iusto odio dignissimos ducimus qui.
+                    At vero eos et accusamus et iusto odio dignissimos ducimus
+                    qui.
                   </p>
                 </div>
               </div>
