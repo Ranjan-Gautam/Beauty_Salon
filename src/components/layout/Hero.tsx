@@ -228,13 +228,15 @@ export default function Hero() {
             onClick={(e) => e.stopPropagation()}
           >
             <iframe
-              width="100%"
-              height="100%"
-              src="https://www.youtube.com/embed/C20GvgCMhq0?autoplay=1"
+              width="560"
+              height="315"
+              src="https://www.youtube.com/embed/-FnrCZJw6TE?si=1L1DGBpY3hd10xvL"
               title="YouTube video player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+            ></iframe>
             <button
               onClick={() => setShowVideo(false)}
               className="absolute -top-12 right-0 w-10 h-10 rounded-full border border-white/50 flex items-center justify-center text-white text-xl hover:bg-white/10 transition-colors"
