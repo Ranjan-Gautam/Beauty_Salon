@@ -1,0 +1,1 @@
+export const branches = ["New Baneshwor", "Labim Mall", "Boudhha", "Pokhara"];
