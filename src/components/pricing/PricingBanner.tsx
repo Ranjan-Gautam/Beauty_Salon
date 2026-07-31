@@ -1,7 +1,7 @@
 export default function PricingBanner() {
   return (
     <section className="relative bg-[#f3e5e0] h-125 flex items-center overflow-hidden">
-      {/* Decorative Icon */}
+     
       <div className="absolute top-24 left-1/2 -translate-x-1/2 text-5xl text-gray-500">
         ✧
       </div>
