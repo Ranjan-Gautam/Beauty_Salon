@@ -1,0 +1,89 @@
+/// <reference types="react" />
+
+import Image from "next/image";
+
+const blogs = [
+  {
+    title: "Beauty Tips For Healthy Skin",
+    category: "News",
+    comments: "No Comment",
+    views: "212 Views",
+    image: "/blog/blog-1.jpg",
+    date: "28",
+    month: "MAR",
+    description: "Discover essential skincare tips and routines.",
+  },
+  {
+    title: "Latest Hair Styling Trends",
+    category: "Articles",
+    comments: "No Comment",
+    views: "365 Views",
+    image: "/blog/blog-2.jpg",
+    date: "7",
+    month: "FEB",
+    description: "Explore the latest styling trends and techniques.",
+  },
+  {
+    title: "Choosing The Right Makeup",
+    category: "News",
+    comments: "No Comment",
+    views: "379 Views",
+    image: "/blog/blog-3.jpg",
+    date: "10",
+    month: "MAY",
+    description: "Learn how to choose the right makeup products.",
+  },
+];
+
+export default function BlogGrid() {
+  return (
+    <section className="bg-[#f7f3f1] py-24">
+      <div className="max-w-7xl mx-auto px-8 lg:px-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {blogs.map((blog) => (
+          <div
+              key={blog.title}
+              className="bg-white shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
+            >
+              <div className="relative">
+                <Image
+                  src={blog.image}
+                  alt={blog.title}
+                  width={500}
+                  height={350}
+                  className="w-full h-64 object-cover"
+                />
+
+                <div className="absolute bottom-0 right-6 bg-[#c48a6a] text-white text-center px-3 py-2">
+                  <div className="text-xl font-semibold">
+                    {blog.date}
+                  </div>
+
+                  <div className="text-xs">
+                    {blog.month}
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6">
+                <div className="flex gap-4 text-sm text-gray-500 mb-4">
+                  <span>{blog.category}</span>
+                  <span>{blog.comments}</span>
+                  <span>{blog.views}</span>
+                </div>
+
+                <h3 className="text-2xl font-serif text-[#2f2f2f] mb-4">
+                  {blog.title}
+                </h3>
+
+                <p className="text-gray-600 leading-8">
+                  {blog.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
