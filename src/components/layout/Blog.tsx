@@ -90,7 +90,7 @@ export default function Blog() {
                 />
 
                 <div className="p-7">
-                  <h3 className="text-2xl font-semibold text-[#2f2f2f] mb-4">
+                  <h3 className="text-2xl font-semibold text-[#2f2f2f] mb-4 min-h-[64px]">
                     {post.title}
                   </h3>
 

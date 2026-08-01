@@ -33,7 +33,38 @@ const blogs = [
     month: "MAY",
     description: "Learn how to choose the right makeup products.",
   },
+  {
+    title: "Professional Salon Experience",
+    category: "News",
+    comments: "No Comment",
+    views: "383 Views",
+    image: "/blog/blog-4.jpg",
+    date: "17",
+    month: "JAN",
+    description: "Experience luxury treatments and expert care.",
+  },
+  {
+    title: "Modern Beauty Studio Design",
+    category: "News",
+    comments: "No Comment",
+    views: "351 Views",
+    image: "/blog/blog-5.jpg",
+    date: "9",
+    month: "OCT",
+    description: "A look into contemporary beauty interiors.",
+  },
+  {
+    title: "Hair Care Essentials",
+    category: "News",
+    comments: "1 Comment",
+    views: "304 Views",
+    image: "/blog/blog-6.jpg",
+    date: "15",
+    month: "JUL",
+    description: "Keep your hair healthy with these simple tips.",
+  },
 ];
+
 
 export default function BlogGrid() {
   return (
