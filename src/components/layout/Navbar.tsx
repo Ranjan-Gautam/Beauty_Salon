@@ -10,7 +10,6 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
-  { label: "Shop", href: "/shop" },
   { label: "Pricing", href: "/pricing" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
@@ -47,26 +46,7 @@ export default function Navbar() {
           </li>
         ))}
       </ul>
-
-      <div className="flex items-center gap-8">
-        <button className="relative p-2 bg-transparent border-none cursor-pointer text-[#4a3728] hover:text-[#c47c5a] transition-colors">
-          <IoMdHeartEmpty size={22} className="text-[#c47c5a]" />
-          <span className="absolute -top-0.5 -right-0.5 bg-[#c47c5a] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-            0
-          </span>
-        </button>
-        <div className="relative group">
-          <button className="relative p-2 bg-transparent border-none cursor-pointer text-[#4a3728] hover:text-[#c47c5a] transition-colors">
-            <IoBagOutline size={22} className="text-[#c47c5a] " />
-            <span className="absolute -top-0.5 -right-0.5 bg-[#c47c5a] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-              0
-            </span>
-          </button>
-          {/*Dropdown message*/}
-          <div className="absolute left-0 top-full mt-2 w-48 bg-white shadow-md rounded p-4 hidden group-hover:block z-50">
-            <p className="text-sm text-[#4a3728]">No products in the cart.</p>
-          </div>
-        </div>
+      <div>
         <Link
           href="/appointment"
           className="border border-[#c47c5a] text-[#c47c5a] text-xm px-6 py-2 rounded hover:bg-[#c47c5a] hover:text-white transition-colors no-underline"
