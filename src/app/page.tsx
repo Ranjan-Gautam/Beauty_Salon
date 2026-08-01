@@ -1,7 +1,6 @@
 import Hero from "@/components/layout/Hero";
 import SkincareIntro from "@/components/layout/IntroSection";
 import Services from "@/components/layout/Services";
-import ProductsServices from "@/components/layout/ProductsSection";
 import Facial from "@/components/layout/Facial";
 import Testimionials from "@/components/layout/Testimonials";
 import Pricing from "@/components/layout/Pricing";
@@ -15,14 +14,13 @@ export default function Home() {
       <Hero />
       <SkincareIntro />
       <Services />
-      <ProductsServices />
       <Facial />
-     
+
       <Testimionials />
       <Pricing />
       <Blog />
       <Partners />
-      <Footer />  
+      <Footer />
     </main>
   );
 }

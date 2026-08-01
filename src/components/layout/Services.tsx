@@ -6,26 +6,26 @@ const services = [
   {
     title: "Pedicure",
     description:
-      "Suspendisse potenti euismod libero in neque molestie et mentum libero maximus.",
+      "Soothing foot care that softens, shapes, and finishes with a polish that lasts.",
     image: "/service-pedicure.jpg",
   },
   {
     title: "Manicure",
     description:
-      "Suspendisse potenti euismod libero in neque molestie et mentum libero maximus.",
+      "Hand and nail treatment that leaves your fingertips neat, smooth, and camera-ready.",
     image: "/service-manicure.jpg",
   },
   {
     title: "Nail Polish",
     description:
-      "Suspendisse potenti euismod libero in neque molestie et mentum libero maximus.",
+      "A fresh, precise coat in the shade of your choice, applied by steady hands.",
     image: "/service-nailpolish.jpg",
   },
 ];
 
 export default function Services() {
   return (
-    <section className="relative w-full bg-[#f9f3f0] py-24 px-10 text-center overflow-hidden">
+    <section className="relative w-full bg-[#f9f3f0] py-16 md:py-24 px-6 md:px-10 text-center overflow-hidden">
       <Image
         src="/services-bg.png"
         alt=""
@@ -36,17 +36,17 @@ export default function Services() {
         <p className="text-[#c47c5a] font-semibold tracking-wide mb-3">
           EXPLORE OUR SERVICES
         </p>
-        <h2 className="text-4xl font-serif text-[#2c1810] leading-tight mb-16 max-w-2xl mx-auto">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-[#2c1810] leading-tight mb-10 md:mb-16 max-w-2xl mx-auto">
           Everything Is Beautiful, And You Just Have To Feel It
         </h2>
 
-        <div className="grid grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {services.map((service, i) => (
             <div
               key={i}
-              className="bg-white rounded-lg p-8 flex flex-col items-center"
+              className="bg-white rounded-lg p-6 md:p-8 flex flex-col items-center"
             >
-              <div className="relative w-44 h-44 mb-6">
+              <div className="relative w-36 h-36 md:w-44 md:h-44 mb-6">
                 <div className="w-full h-full rounded-full overflow-hidden relative">
                   <Image
                     src={service.image}
@@ -55,8 +55,8 @@ export default function Services() {
                     className="object-cover"
                   />
                 </div>
-                <div className="absolute bottom-0 right-0 w-14 h-14 bg-[#c47c5a] rounded-full flex items-center justify-center">
-                  <FaHandSparkles size={20} className="text-white" />
+                <div className="absolute bottom-0 right-0 w-12 h-12 md:w-14 md:h-14 bg-[#c47c5a] rounded-full flex items-center justify-center">
+                  <FaHandSparkles size={18} className="text-white" />
                 </div>
               </div>
 
@@ -76,7 +76,7 @@ export default function Services() {
           ))}
         </div>
 
-        <p className="mt-16 text-[#2c1810]">
+        <p className="mt-12 md:mt-16 text-[#2c1810] px-4">
           Do Something To Be More Stylish.{" "}
           <Link href="#" className="text-[#c47c5a] underline">
             Check Out More Services →

@@ -15,11 +15,11 @@ export default function IntroSection() {
   return (
     <section
       ref={sectionRef}
-      className="w-full bg-white py-20 px-10 flex items-center gap-30 overflow-hidden"
+      className="w-full bg-white py-14 md:py-20 px-6 md:px-10 flex flex-col md:flex-row items-center gap-10 md:gap-30 overflow-hidden"
     >
       {/* Circular image */}
       <div
-        className={`relative w-125 h-125 shrink-0 ml-20 transition-all duration-1000 ease-out ${
+        className={`relative w-64 h-64 md:w-125 md:h-125 shrink-0 md:ml-20 transition-all duration-1000 ease-out ${
           isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-24 "
         }`}
       >
@@ -36,25 +36,25 @@ export default function IntroSection() {
 
       {/* Content */}
       <div
-        className={`flex-1 transition-all duration-1000 ease-out ${
+        className={`flex-1 text-center md:text-left transition-all duration-1000 ease-out ${
           isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-24"
         }`}
       >
         <p className="text-[#c47c5a] font-semibold tracking-wide mb-3">
           BEST SKIN CARE
         </p>
-        <h2 className="text-5xl font-serif text-[#2c1810] leading-tight mb-6">
+        <h2 className="text-3xl md:text-5xl font-serif text-[#2c1810] leading-tight mb-6">
           Our Responsibility Is To Make You Beautiful
         </h2>
-        <p className="text-[#7a6a62] max-w-md mb-10">
+        <p className="text-[#7a6a62] max-w-md mb-10 mx-auto md:mx-0">
           Skin has a memory. Ours helps it forget the bad days — gentle hands,
           honest products, real results.
         </p>
 
-        <div className="flex items-center gap-16 mb-10">
+        <div className="flex flex-wrap justify-center md:justify-start items-center gap-8 md:gap-16 mb-10">
           <div ref={ratingRef}>
             <p className="text-4xl font-serif text-[#2c1810]">{ratingValue}</p>
-            <div className="flex gap-1 text-[#c47c5a] my-1">
+            <div className="flex gap-1 text-[#c47c5a] my-1 justify-center md:justify-start">
               {Array.from({ length: 5 }).map((_, i) => (
                 <FaStar key={i} size={14} />
               ))}

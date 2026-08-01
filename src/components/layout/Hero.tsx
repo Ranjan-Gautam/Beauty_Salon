@@ -33,7 +33,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative w-full h-200 bg-[#f9f3f0] overflow-hidden">
+    <section className="relative w-full h-[600px] md:h-[700px] lg:h-200 bg-[#f9f3f0] overflow-hidden">
       {/* Background floral SVG */}
       <svg
         className="absolute inset-0 w-full h-full opacity-30 pointer-events-none"
@@ -163,8 +163,8 @@ export default function Hero() {
           }`}
         >
           {/* Left Content */}
-          <div className="w-1/2 px-20 z-10">
-            <h1 className="text-5xl font-bold text-[#2c1810] leading-tight mb-6 whitespace-pre-line">
+          <div className="w-full md:w-1/2 px-6 md:px-20 z-10">
+            <h1 className="text-3xl md:text-5xl font-bold text-[#2c1810] leading-tight mb-6 whitespace-pre-line">
               {slide.title}
             </h1>
             <p className="text-[#7a6a62] text-base mb-8 max-w-md">
@@ -179,7 +179,7 @@ export default function Hero() {
           </div>
 
           {/* Right Image */}
-          <div className="w-1/2 h-full relative bg-[#f9f3f0]">
+          <div className="hidden md:block w-1/2 h-full relative bg-[#f9f3f0]">
             <Image
               src={slide.image}
               alt={slide.title}
@@ -197,7 +197,7 @@ export default function Hero() {
 
           <button
             onClick={() => setShowVideo(true)}
-            className="absolute right-[52%] bottom-80 z-20 w-24 h-24 bg-[#c47c5a] rounded-full flex items-center justify-center hover:bg-[#a8644a] transition-colors"
+            className="hidden md:flex absolute right-[52%] bottom-80 z-20 w-24 h-24 bg-[#c47c5a] rounded-full items-center justify-center hover:bg-[#a8644a] transition-colors"
           >
             <IoPlayCircleOutline size={48} className="text-white" />
           </button>
@@ -224,7 +224,7 @@ export default function Hero() {
           onClick={() => setShowVideo(false)}
         >
           <div
-            className="relative w-200 aspect-video"
+            className="relative w-[90vw] max-w-3xl aspect-video"
             onClick={(e) => e.stopPropagation()}
           >
             <iframe

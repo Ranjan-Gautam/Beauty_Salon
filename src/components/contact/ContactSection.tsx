@@ -1,9 +1,4 @@
-import {
-  FiSend,
-  FiClock,
-  FiMail,
-  FiPhone,
-} from "react-icons/fi";
+import { FiSend, FiClock, FiMail, FiPhone } from "react-icons/fi";
 
 export default function ContactSection() {
   const contactInfo = [
@@ -30,30 +25,29 @@ export default function ContactSection() {
   ];
 
   return (
-    <section className="bg-[#f7f3f1] py-20">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-10 items-start">
-          
-          <div className="grid sm:grid-cols-2 gap-5">
+    <section className="bg-[#f7f3f1] py-14 md:py-20">
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
+        <div className="grid lg:grid-cols-2 gap-8 md:gap-10 items-start">
+          <div className="grid sm:grid-cols-2 gap-4 md:gap-5">
             {contactInfo.map((item, index) => (
               <div
                 key={index}
-                className="bg-[#c78b67] text-white h-[180px] flex flex-col items-center justify-center text-center p-6"
+                className="bg-[#c78b67] text-white h-[160px] md:h-[180px] flex flex-col items-center justify-center text-center p-5 md:p-6"
               >
-                <div className="mb-4">{item.icon}</div>
+                <div className="mb-3 md:mb-4">{item.icon}</div>
 
-                <h3 className="text-[18px] font-serif font-semibold mb-2">
+                <h3 className="text-base md:text-[18px] font-serif font-semibold mb-2">
                   {item.title}
                 </h3>
 
-                <p className="text-[14px]">{item.text}</p>
+                <p className="text-[13px] md:text-[14px]">{item.text}</p>
               </div>
             ))}
           </div>
 
           <div>
             <form className="space-y-5">
-              <div className="grid md:grid-cols-2 gap-5">
+              <div className="grid md:grid-cols-2 gap-4 md:gap-5">
                 <input
                   type="text"
                   placeholder="Name"
@@ -67,7 +61,7 @@ export default function ContactSection() {
                 />
               </div>
 
-              <div className="grid md:grid-cols-2 gap-5">
+              <div className="grid md:grid-cols-2 gap-4 md:gap-5">
                 <input
                   type="text"
                   placeholder="Phone"
@@ -89,7 +83,7 @@ export default function ContactSection() {
 
               <button
                 type="submit"
-                className="bg-[#c78b67] text-white px-12 py-3 text-sm font-semibold hover:bg-[#b67b57] transition"
+                className="w-full sm:w-auto bg-[#c78b67] text-white px-12 py-3 text-sm font-semibold hover:bg-[#b67b57] transition"
               >
                 SEND
               </button>

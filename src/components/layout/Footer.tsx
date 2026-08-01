@@ -13,15 +13,14 @@ import {
 export default function Footer() {
   return (
     <footer className="bg-[#c78c67] text-white">
-      <div className="max-w-6xl mx-auto px-6 pt-20 pb-16 text-center">
+      <div className="max-w-6xl mx-auto px-6 pt-12 md:pt-20 pb-12 md:pb-16 text-center">
         <p className="uppercase text-sm font-semibold tracking-wider mb-4">
           The Best Pricing
         </p>
 
-        <h2 className="text-4xl md:text-6xl font-serif font-bold leading-tight mb-12">
+        <h2 className="text-2xl sm:text-3xl md:text-6xl font-serif font-bold leading-tight mb-8 md:mb-12">
           Want To Get Updates On Aesthetic
-          <br />
-          & Wellness News?
+          <br className="hidden sm:block" />& Wellness News?
         </h2>
 
         <div className="max-w-3xl mx-auto flex flex-col md:flex-row">
@@ -36,15 +35,17 @@ export default function Footer() {
           </button>
         </div>
       </div>
-  
-      <div className="max-w-6xl mx-auto px-6 py-16">
-        <div className="grid md:grid-cols-4 gap-12">
+
+      <div className="max-w-6xl mx-auto px-6 py-12 md:py-16">
+        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-12">
           <div>
-            <h3 className="text-3xl font-bold mb-6">Beauty Salon</h3>
+            <h3 className="text-2xl md:text-3xl font-bold mb-6">
+              Beauty Salon
+            </h3>
 
             <p className="leading-8 text-white/90 mb-8">
-              Pellentesque blandit nibh eget egestas molestie justo diam
-              itudin dolor diam vitae orci seieed.
+              Pellentesque blandit nibh eget egestas molestie justo diam itudin
+              dolor diam vitae orci seieed.
             </p>
 
             <div className="flex gap-4">
@@ -56,13 +57,13 @@ export default function Footer() {
                   >
                     <Icon size={14} />
                   </div>
-                )
+                ),
               )}
             </div>
           </div>
 
           <div>
-            <h3 className="text-3xl font-serif font-bold mb-6">
+            <h3 className="text-2xl md:text-3xl font-serif font-bold mb-6">
               Quick Links
             </h3>
 
@@ -73,54 +74,51 @@ export default function Footer() {
                     <FaCheck size={12} />
                     {item}
                   </li>
-                )
+                ),
               )}
             </ul>
           </div>
 
           <div>
-            <h3 className="text-3xl font-serif font-bold mb-6">
+            <h3 className="text-2xl md:text-3xl font-serif font-bold mb-6">
               Our Services
             </h3>
 
             <ul className="space-y-4">
-              {[
-                "Pedicure",
-                "Manicure",
-                "Body Scrub",
-                "Face Treatment",
-              ].map((item) => (
-                <li key={item} className="flex items-center gap-3">
-                  <FaCheck size={12} />
-                  {item}
-                </li>
-              ))}
+              {["Pedicure", "Manicure", "Body Scrub", "Face Treatment"].map(
+                (item) => (
+                  <li key={item} className="flex items-center gap-3">
+                    <FaCheck size={12} />
+                    {item}
+                  </li>
+                ),
+              )}
             </ul>
           </div>
 
           <div>
-            <h3 className="text-3xl font-serif font-bold mb-6">
+            <h3 className="text-2xl md:text-3xl font-serif font-bold mb-6">
               Our Details
             </h3>
 
             <ul className="space-y-6">
               <li className="flex gap-3">
-                <FaMapMarkerAlt className="mt-1" />
+                <FaMapMarkerAlt className="mt-1 shrink-0" />
                 <span>30 Edington Smyrnd, GA 30082</span>
               </li>
 
               <li className="flex gap-3">
-                <FaPhoneAlt className="mt-1" />
+                <FaPhoneAlt className="mt-1 shrink-0" />
                 <span>1 501-448-5781</span>
               </li>
 
               <li className="flex gap-3">
-                <FaEnvelope className="mt-1" />
+                <FaEnvelope className="mt-1 shrink-0" />
                 <span>info@beautysalon.com</span>
               </li>
 
               <li className="flex gap-3">
-                <FaClock className="mt-1" />
+                <FaClock className="mt-1 shrink-0" />
                 <span>Fri-Sat: 8AM - 10PM</span>
               </li>
             </ul>
@@ -129,13 +127,10 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/20">
-        <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
           <p>© Beauty Salon. All rights reserved.</p>
 
-          <div className="flex gap-6 mt-4 md:mt-0">
-            #
-            #
-          </div>
+          <div className="flex gap-6"># #</div>
         </div>
       </div>
     </footer>

@@ -1,8 +1,8 @@
 export default function BlogBanner() {
   return (
-    <section className="relative bg-[#f7f3f1] h-[500px] flex items-center overflow-hidden">
+    <section className="relative bg-[#f7f3f1] h-64 md:h-[500px] flex items-center overflow-hidden">
       {/* Decorative Star */}
-      <div className="absolute top-10 left-1/2 -translate-x-1/2 text-5xl text-gray-500">
+      <div className="absolute top-12 md:top-10 left-1/2 -translate-x-1/2 text-3xl md:text-5xl text-gray-500">
         ✧
       </div>
 
@@ -12,13 +12,13 @@ export default function BlogBanner() {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-8 lg:px-12 w-full">
+      <div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12 w-full">
         <div className="max-w-xl">
-          <h1 className="text-7xl font-serif text-[#2f2f2f] mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-serif text-[#2f2f2f] mb-4 md:mb-6">
             Blog
           </h1>
 
-          <div className="flex items-center gap-3 text-lg">
+          <div className="flex items-center gap-3 text-base md:text-lg">
             <span className="text-gray-600">Home</span>
 
             <span className="text-gray-400">•</span>

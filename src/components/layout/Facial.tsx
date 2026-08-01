@@ -11,7 +11,7 @@ export default function Facial() {
   const closeVideo = () => setIsVideoOpen(false);
 
   return (
-    <section className="relative w-full h-[550px] overflow-hidden">
+    <section className="relative w-full h-[350px] md:h-[550px] overflow-hidden">
       {/* Background image */}
       <Image
         src="/Facial.jpg"
@@ -41,10 +41,11 @@ export default function Facial() {
       <div className="relative z-10 h-full flex items-center justify-center">
         <button
           onClick={openVideo}
-          className="w-20 h-20 rounded-full border-2 border-white flex items-center justify-center hover:bg-white hover:text-[#c47c5a] transition-colors"
+          className="w-14 h-14 md:w-20 md:h-20 rounded-full border-2 border-white flex items-center justify-center hover:bg-white hover:text-[#c47c5a] transition-colors"
           aria-label="Play video"
         >
-          <FaPlay size={24} />
+          <FaPlay size={20} className="md:hidden" />
+          <FaPlay size={24} className="hidden md:block" />
         </button>
       </div>
 
