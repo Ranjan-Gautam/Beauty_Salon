@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { HiMenu, HiX } from "react-icons/hi";
+
 import Image from "next/image";
 
 export default function AboutHero() {

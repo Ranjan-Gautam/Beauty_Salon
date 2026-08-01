@@ -9,19 +9,19 @@ import "swiper/css/navigation";
 
 const posts = [
   {
-    title: "Temporibus autem quibus",
+    title: "5 Skincare Habits Worth Keeping",
     image: "/blog/blog-1.jpg",
     excerpt:
       "A closer look at skincare routines that actually fit real, busy lives.",
   },
   {
-    title: "Nemo enim ipsam voluptas",
+    title: "Why Consistency Beats Expensive Products",
     image: "/blog/blog-2.jpg",
     excerpt:
       "Why consistency matters more than expensive products in your beauty routine.",
   },
   {
-    title: "Neque porro quisquam amet",
+    title: "Caring For Your Skin Through The Seasons",
     image: "/blog/blog-3.jpg",
     excerpt:
       "Seasonal changes call for seasonal care — here's what to adjust and when.",
