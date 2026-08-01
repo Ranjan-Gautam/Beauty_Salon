@@ -24,6 +24,15 @@ const statusStyles: Record<string, string> = {
 
 const tabs = ["All", "Pending", "Confirmed", "Cancelled"];
 
+const cancelReasons = [
+  { label: "General cancellation", value: "" },
+  { label: "Closed for public holiday", value: "We are closed on this date for a public holiday." },
+  { label: "Specialist unavailable", value: "Our specialist for this service is unavailable on the requested date." },
+  { label: "Fully booked / overbooked", value: "We are fully booked at this time slot due to high demand." },
+  { label: "Branch under maintenance", value: "This branch is temporarily closed for maintenance." },
+  { label: "Could not reach customer", value: "We were unable to reach you to confirm the details." },
+];
+
 export default function AdminAppointmentsTable({
   appointments,
 }: {
@@ -38,19 +47,20 @@ export default function AdminAppointmentsTable({
     type: "success" | "error";
   } | null>(null);
   const [confirmCancelId, setConfirmCancelId] = useState<string | null>(null);
+  const [cancelReason, setCancelReason] = useState("");
 
   function showToast(message: string, type: "success" | "error") {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
   }
 
-  async function updateStatus(id: string, status: string) {
+  async function updateStatus(id: string, status: string, reason?: string) {
     setUpdatingId(id);
     try {
       const res = await fetch(`/api/admin/appointments/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ status, reason }),
       });
 
       if (res.ok) {
@@ -64,6 +74,7 @@ export default function AdminAppointmentsTable({
     } finally {
       setUpdatingId(null);
       setConfirmCancelId(null);
+      setCancelReason("");
     }
   }
 
@@ -85,7 +96,6 @@ export default function AdminAppointmentsTable({
 
   return (
     <div>
-      {/* Toolbar: tabs, search, logout */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
         <div className="flex gap-2">
           {tabs.map((tab) => (
@@ -128,7 +138,6 @@ export default function AdminAppointmentsTable({
         </div>
       </div>
 
-      {/* Table */}
       <div className="bg-white rounded-xl overflow-x-auto shadow-sm">
         <table className="w-full text-sm">
           <thead>
@@ -161,7 +170,9 @@ export default function AdminAppointmentsTable({
                 <td className="px-5 py-4 text-[#2c1810]/70">
                   {a.service.name}
                 </td>
-                <td className="px-5 py-4 text-[#2c1810]/70">{a.branch.name}</td>
+                <td className="px-5 py-4 text-[#2c1810]/70">
+                  {a.branch.name}
+                </td>
                 <td className="px-5 py-4 text-[#2c1810]/70">
                   {new Date(a.date).toLocaleDateString()}
                 </td>
@@ -213,26 +224,38 @@ export default function AdminAppointmentsTable({
         </table>
       </div>
 
-      {/* Confirm cancel modal */}
       {confirmCancelId && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-6">
           <div className="bg-white rounded-xl p-6 max-w-sm w-full">
             <h3 className="text-lg font-serif text-[#2c1810] mb-2">
               Cancel this appointment?
             </h3>
-            <p className="text-sm text-[#2c1810]/70 mb-6">
-              This will mark the appointment as cancelled. This action can be
-              reversed later if needed.
+            <p className="text-sm text-[#2c1810]/70 mb-4">
+              The customer will be notified by email. Let them know why (optional).
             </p>
+            <select
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+              className="w-full border border-[#e0cfc8] rounded px-3 py-2 text-sm text-[#2c1810] mb-6 focus:outline-none focus:border-[#c47c5a]"
+            >
+              {cancelReasons.map((r) => (
+                <option key={r.label} value={r.value}>
+                  {r.label}
+                </option>
+              ))}
+            </select>
             <div className="flex gap-3">
               <button
-                onClick={() => setConfirmCancelId(null)}
+                onClick={() => {
+                  setConfirmCancelId(null);
+                  setCancelReason("");
+                }}
                 className="flex-1 py-2 rounded border border-[#e0cfc8] text-[#2c1810] hover:bg-[#f9f3f0] transition-colors text-sm"
               >
                 Keep It
               </button>
               <button
-                onClick={() => updateStatus(confirmCancelId, "cancelled")}
+                onClick={() => updateStatus(confirmCancelId, "cancelled", cancelReason)}
                 className="flex-1 py-2 rounded bg-red-500 text-white hover:bg-red-600 transition-colors text-sm"
               >
                 Yes, Cancel
@@ -242,7 +265,6 @@ export default function AdminAppointmentsTable({
         </div>
       )}
 
-      {/* Toast */}
       {toast && (
         <div
           className={`fixed bottom-6 right-6 px-5 py-3 rounded-lg shadow-lg text-sm font-medium z-50 ${
