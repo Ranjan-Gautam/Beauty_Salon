@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   IoCheckmarkCircleOutline,
@@ -10,13 +10,11 @@ import {
 } from "react-icons/io5";
 import { branches } from "@/data/branch";
 
-const services = [
-  "Facials",
-  "Cosmetology",
-  "Body Relax",
-  "Hair Styling",
-  "Makeup",
-];
+interface Service {
+  id: string;
+  name: string;
+  price: number;
+}
 
 const timeSlots = [
   "9:00 AM",
@@ -61,6 +59,25 @@ export default function AppointmentForm() {
   const [form, setForm] = useState<FormData>(initialForm);
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [services, setServices] = useState<Service[]>([]);
+  const [selectedServicePrice, setSelectedServicePrice] = useState(0);
+  const [createdAppointmentId, setCreatedAppointmentId] = useState<
+    string | null
+  >(null);
+  const [payingNow, setPayingNow] = useState(false);
+
+  useEffect(() => {
+    async function loadServices() {
+      try {
+        const res = await fetch("/api/services");
+        const data = await res.json();
+        setServices(data);
+      } catch (error) {
+        console.error("Failed to load services:", error);
+      }
+    }
+    loadServices();
+  }, []);
 
   function handleChange(
     e: React.ChangeEvent<
@@ -70,6 +87,12 @@ export default function AppointmentForm() {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
+  }
+
+  function selectService(service: Service) {
+    setForm((prev) => ({ ...prev, service: service.name }));
+    setSelectedServicePrice(service.price);
+    setErrors((prev) => ({ ...prev, service: "" }));
   }
 
   function validate(): boolean {
@@ -106,6 +129,8 @@ export default function AppointmentForm() {
         throw new Error("Failed to submit appointment");
       }
 
+      const data = await res.json();
+      setCreatedAppointmentId(data.appointment.id);
       setSubmitted(true);
       setForm(initialForm);
     } catch (error) {
@@ -114,10 +139,50 @@ export default function AppointmentForm() {
     }
   }
 
+  async function handlePayNow() {
+    if (!createdAppointmentId) return;
+    setPayingNow(true);
+
+    try {
+      const res = await fetch("/api/payment/initiate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          appointmentId: createdAppointmentId,
+          amount: Math.floor(selectedServicePrice / 2),
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error("Failed to initiate payment");
+      }
+
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = data.paymentUrl;
+
+      Object.entries(data.formData).forEach(([key, value]) => {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = String(value);
+        form.appendChild(input);
+      });
+
+      document.body.appendChild(form);
+      form.submit();
+    } catch (error) {
+      console.error(error);
+      alert("Payment could not be started. Please try again.");
+      setPayingNow(false);
+    }
+  }
+
   return (
     <section id="appointment-form" className="bg-white py-20">
       <div className="max-w-[1250px] mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
-        {/* Left: image + trust points */}
         <div>
           <div className="relative w-full aspect-[4/3.4] rounded-lg overflow-hidden mb-8">
             <Image
@@ -147,20 +212,72 @@ export default function AppointmentForm() {
           </ul>
         </div>
 
-        {/* Right: form card */}
         <div className="bg-[#f9f3f0] rounded-lg p-8 md:p-10 border-t-4 border-[#c47c5a]">
           {submitted ? (
-            <div className="text-center py-10">
-              <h2 className="text-2xl font-serif text-[#2c1810] mb-3">
-                Thank You!
+            <div className="text-center py-6">
+              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5">
+                <IoCheckmarkCircleOutline
+                  size={32}
+                  className="text-green-600"
+                />
+              </div>
+
+              <h2 className="text-2xl font-serif text-[#2c1810] mb-2">
+                Appointment Requested!
               </h2>
-              <p className="text-[#2c1810]/70 mb-6">
-                Your appointment request has been received. Our team will
-                contact you shortly to confirm your booking.
+              <p className="text-[#2c1810]/70 mb-8 max-w-sm mx-auto">
+                Reserve your slot now with a small deposit — the rest is paid at
+                the salon after your service.
               </p>
+
+              {selectedServicePrice > 0 && (
+                <div className="bg-white rounded-xl p-6 mb-6 max-w-sm mx-auto text-left shadow-sm border border-[#e0cfc8]">
+                  <div className="flex justify-between text-sm text-[#2c1810]/70 mb-2">
+                    <span>Service Total</span>
+                    <span>Rs. {selectedServicePrice.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-[#2c1810]/70 mb-4">
+                    <span>Pay Later at Salon</span>
+                    <span>
+                      Rs. {Math.ceil(selectedServicePrice / 2).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="border-t border-[#e0cfc8] pt-4 flex justify-between items-center mb-5">
+                    <span className="text-[#2c1810] font-medium">
+                      Reserve With
+                    </span>
+                    <span className="text-2xl font-serif text-[#c47c5a]">
+                      Rs.{" "}
+                      {Math.floor(selectedServicePrice / 2).toLocaleString()}
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={handlePayNow}
+                    disabled={payingNow}
+                    className="w-full bg-[#60bb46] text-white py-3.5 rounded-lg font-medium hover:bg-[#4fa338] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                  >
+                    {payingNow ? (
+                      "Redirecting to eSewa..."
+                    ) : (
+                      <>Pay Deposit with eSewa</>
+                    )}
+                  </button>
+
+                  <p className="text-xs text-[#2c1810]/50 mt-3 text-center">
+                    Secured by eSewa. Your slot is held once payment is
+                    confirmed.
+                  </p>
+                </div>
+              )}
+
               <button
-                onClick={() => setSubmitted(false)}
-                className="bg-[#c47c5a] text-white px-6 py-2.5 rounded hover:bg-[#a8623f] transition-colors"
+                onClick={() => {
+                  setSubmitted(false);
+                  setSelectedServicePrice(0);
+                  setCreatedAppointmentId(null);
+                }}
+                className="text-[#c47c5a] font-medium hover:underline text-sm"
               >
                 Book Another Appointment
               </button>
@@ -258,17 +375,15 @@ export default function AppointmentForm() {
                     {services.map((s) => (
                       <button
                         type="button"
-                        key={s}
-                        onClick={() =>
-                          setForm((prev) => ({ ...prev, service: s }))
-                        }
+                        key={s.id}
+                        onClick={() => selectService(s)}
                         className={`px-4 py-2 rounded-full text-sm border transition-colors ${
-                          form.service === s
+                          form.service === s.name
                             ? "bg-[#c47c5a] text-white border-[#c47c5a]"
                             : "bg-white text-[#2c1810] border-[#e0cfc8] hover:border-[#c47c5a]"
                         }`}
                       >
-                        {s}
+                        {s.name} — Rs. {s.price.toLocaleString()}
                       </button>
                     ))}
                   </div>

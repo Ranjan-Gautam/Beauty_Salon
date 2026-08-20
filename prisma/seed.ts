@@ -10,12 +10,20 @@ const prisma = new PrismaClient({ adapter });
 
 async function main() {
   const branchNames = ["New Baneshwor", "Labim Mall", "Boudhha", "Pokhara"];
-  const serviceNames = [
-    "Facials",
-    "Cosmetology",
-    "Body Relax",
-    "Hair Styling",
-    "Makeup",
+
+  const services = [
+    { name: "Facials", price: 1500 },
+    { name: "Cosmetology", price: 2000 },
+    { name: "Body Relax", price: 1800 },
+    { name: "Hair Styling", price: 1200 },
+    { name: "Makeup", price: 3500 },
+    { name: "Bridal Makeup", price: 15000 },
+    { name: "Manicure", price: 800 },
+    { name: "Pedicure", price: 1000 },
+    { name: "Hair Spa", price: 2500 },
+    { name: "Threading & Waxing", price: 600 },
+    { name: "Nail Art", price: 1200 },
+    { name: "Skin Whitening Treatment", price: 2800 },
   ];
 
   for (const name of branchNames) {
@@ -25,10 +33,17 @@ async function main() {
     }
   }
 
-  for (const name of serviceNames) {
-    const existing = await prisma.service.findFirst({ where: { name } });
-    if (!existing) {
-      await prisma.service.create({ data: { name } });
+  for (const service of services) {
+    const existing = await prisma.service.findFirst({
+      where: { name: service.name },
+    });
+    if (existing) {
+      await prisma.service.update({
+        where: { id: existing.id },
+        data: { price: service.price },
+      });
+    } else {
+      await prisma.service.create({ data: service });
     }
   }
 

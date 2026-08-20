@@ -12,6 +12,9 @@ interface Appointment {
   date: Date;
   time: string;
   status: string;
+  paymentStatus: string;
+  totalAmount: number;
+  depositAmount: number;
   branch: { name: string };
   service: { name: string };
 }
@@ -20,6 +23,18 @@ const statusStyles: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-700",
   confirmed: "bg-green-100 text-green-700",
   cancelled: "bg-red-100 text-red-700",
+};
+
+const paymentStyles: Record<string, string> = {
+  unpaid: "bg-gray-100 text-gray-600",
+  deposit_paid: "bg-blue-100 text-blue-700",
+  paid: "bg-green-100 text-green-700",
+};
+
+const paymentLabels: Record<string, string> = {
+  unpaid: "Unpaid",
+  deposit_paid: "Deposit Paid",
+  paid: "Fully Paid",
 };
 
 const tabs = ["All", "Pending", "Confirmed", "Cancelled"];
@@ -64,6 +79,28 @@ export default function AdminAppointmentsTable({
     } finally {
       setUpdatingId(null);
       setConfirmCancelId(null);
+    }
+  }
+
+  async function simulatePayment(id: string) {
+    setUpdatingId(id);
+    try {
+      const res = await fetch("/api/admin/simulate-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ appointmentId: id }),
+      });
+
+      if (res.ok) {
+        showToast("Deposit marked as paid.", "success");
+        router.refresh();
+      } else {
+        showToast("Failed to update payment.", "error");
+      }
+    } catch {
+      showToast("Something went wrong.", "error");
+    } finally {
+      setUpdatingId(null);
     }
   }
 
@@ -130,7 +167,7 @@ export default function AdminAppointmentsTable({
 
       {/* Table */}
       <div className="bg-white rounded-xl overflow-x-auto shadow-sm">
-        <table className="w-full text-sm min-w-[900px]">
+        <table className="w-full text-sm min-w-[1100px]">
           <thead>
             <tr className="bg-[#f9f3f0] text-left text-[#2c1810]">
               <th className="px-5 py-4 font-medium">Name</th>
@@ -140,69 +177,105 @@ export default function AdminAppointmentsTable({
               <th className="px-5 py-4 font-medium">Date</th>
               <th className="px-5 py-4 font-medium">Time</th>
               <th className="px-5 py-4 font-medium">Status</th>
+              <th className="px-5 py-4 font-medium">Payment</th>
               <th className="px-5 py-4 font-medium">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map((a, index) => (
-              <tr
-                key={a.id}
-                className={`border-t border-[#f0e2da] ${
-                  index % 2 === 1 ? "bg-[#f9f3f0]/30" : ""
-                } hover:bg-[#f9f3f0]/60 transition-colors`}
-              >
-                <td className="px-5 py-4 text-[#2c1810] font-medium">
-                  {a.name}
-                </td>
-                <td className="px-5 py-4 text-[#2c1810]/70">
-                  <p>{a.email}</p>
-                  <p className="text-xs text-[#2c1810]/50">{a.phone}</p>
-                </td>
-                <td className="px-5 py-4 text-[#2c1810]/70">
-                  {a.service.name}
-                </td>
-                <td className="px-5 py-4 text-[#2c1810]/70">{a.branch.name}</td>
-                <td className="px-5 py-4 text-[#2c1810]/70">
-                  {new Date(a.date).toLocaleDateString()}
-                </td>
-                <td className="px-5 py-4 text-[#2c1810]/70">{a.time}</td>
-                <td className="px-5 py-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${
-                      statusStyles[a.status] ?? "bg-gray-100 text-gray-700"
-                    }`}
-                  >
-                    {a.status}
-                  </span>
-                </td>
-                <td className="px-5 py-4">
-                  <div className="flex gap-2">
-                    {a.status !== "confirmed" && (
-                      <button
-                        disabled={updatingId === a.id}
-                        onClick={() => updateStatus(a.id, "confirmed")}
-                        className="text-xs px-3 py-1.5 rounded bg-green-100 text-green-700 hover:bg-green-200 transition-colors disabled:opacity-50"
-                      >
-                        Confirm
-                      </button>
+            {filtered.map((a, index) => {
+              const balance = a.totalAmount - a.depositAmount;
+              return (
+                <tr
+                  key={a.id}
+                  className={`border-t border-[#f0e2da] ${
+                    index % 2 === 1 ? "bg-[#f9f3f0]/30" : ""
+                  } hover:bg-[#f9f3f0]/60 transition-colors`}
+                >
+                  <td className="px-5 py-4 text-[#2c1810] font-medium">
+                    {a.name}
+                  </td>
+                  <td className="px-5 py-4 text-[#2c1810]/70">
+                    <p>{a.email}</p>
+                    <p className="text-xs text-[#2c1810]/50">{a.phone}</p>
+                  </td>
+                  <td className="px-5 py-4 text-[#2c1810]/70">
+                    {a.service.name}
+                  </td>
+                  <td className="px-5 py-4 text-[#2c1810]/70">
+                    {a.branch.name}
+                  </td>
+                  <td className="px-5 py-4 text-[#2c1810]/70">
+                    {new Date(a.date).toLocaleDateString()}
+                  </td>
+                  <td className="px-5 py-4 text-[#2c1810]/70">{a.time}</td>
+                  <td className="px-5 py-4">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${
+                        statusStyles[a.status] ?? "bg-gray-100 text-gray-700"
+                      }`}
+                    >
+                      {a.status}
+                    </span>
+                  </td>
+                  <td className="px-5 py-4">
+                    <span
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-medium mb-1 ${
+                        paymentStyles[a.paymentStatus] ??
+                        "bg-gray-100 text-gray-600"
+                      }`}
+                    >
+                      {paymentLabels[a.paymentStatus] ?? a.paymentStatus}
+                    </span>
+                    {a.totalAmount > 0 && (
+                      <p className="text-xs text-[#2c1810]/60">
+                        Rs. {a.depositAmount.toLocaleString()} / Rs.{" "}
+                        {a.totalAmount.toLocaleString()}
+                        {balance > 0 && (
+                          <span className="block text-[#c47c5a]">
+                            Balance: Rs. {balance.toLocaleString()}
+                          </span>
+                        )}
+                      </p>
                     )}
-                    {a.status !== "cancelled" && (
-                      <button
-                        disabled={updatingId === a.id}
-                        onClick={() => setConfirmCancelId(a.id)}
-                        className="text-xs px-3 py-1.5 rounded bg-red-100 text-red-700 hover:bg-red-200 transition-colors disabled:opacity-50"
-                      >
-                        Cancel
-                      </button>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="px-5 py-4">
+                    <div className="flex gap-2 flex-wrap">
+                      {a.paymentStatus === "unpaid" && a.totalAmount > 0 && (
+                        <button
+                          disabled={updatingId === a.id}
+                          onClick={() => simulatePayment(a.id)}
+                          className="text-xs px-3 py-1.5 rounded bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors disabled:opacity-50"
+                        >
+                          Mark Deposit Paid
+                        </button>
+                      )}
+                      {a.status !== "confirmed" && (
+                        <button
+                          disabled={updatingId === a.id}
+                          onClick={() => updateStatus(a.id, "confirmed")}
+                          className="text-xs px-3 py-1.5 rounded bg-green-100 text-green-700 hover:bg-green-200 transition-colors disabled:opacity-50"
+                        >
+                          Confirm
+                        </button>
+                      )}
+                      {a.status !== "cancelled" && (
+                        <button
+                          disabled={updatingId === a.id}
+                          onClick={() => setConfirmCancelId(a.id)}
+                          className="text-xs px-3 py-1.5 rounded bg-red-100 text-red-700 hover:bg-red-200 transition-colors disabled:opacity-50"
+                        >
+                          Cancel
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
             {filtered.length === 0 && (
               <tr>
                 <td
-                  colSpan={8}
+                  colSpan={9}
                   className="px-5 py-10 text-center text-[#2c1810]/50"
                 >
                   No appointments found.

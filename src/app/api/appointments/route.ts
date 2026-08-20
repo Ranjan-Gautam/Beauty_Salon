@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
         message: message || null,
         branchId: branchRecord.id,
         serviceId: serviceRecord.id,
+        totalAmount: serviceRecord.price,
       },
     });
 

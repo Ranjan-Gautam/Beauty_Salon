@@ -5,6 +5,7 @@ import {
   IoTimeOutline,
   IoCheckmarkCircleOutline,
   IoListOutline,
+  IoCashOutline,
 } from "react-icons/io5";
 
 export const dynamic = "force-dynamic";
@@ -16,6 +17,11 @@ export default async function AdminPage() {
   });
 
   const today = new Date().toDateString();
+
+  const totalDeposits = appointments.reduce(
+    (sum, a) => sum + (a.depositAmount || 0),
+    0
+  );
 
   const stats = [
     {
@@ -34,9 +40,9 @@ export default async function AdminPage() {
       icon: IoCheckmarkCircleOutline,
     },
     {
-      label: "Today's Bookings",
-      value: appointments.filter((a) => a.date.toDateString() === today).length,
-      icon: IoCalendarOutline,
+      label: "Deposits Collected",
+      value: `Rs. ${totalDeposits.toLocaleString()}`,
+      icon: IoCashOutline,
     },
   ];
 
@@ -46,7 +52,6 @@ export default async function AdminPage() {
         <h1 className="text-3xl font-serif text-[#2c1810] mb-8">
           Appointments Dashboard
         </h1>
-
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-10">
           {stats.map((stat) => (
             <div
@@ -65,7 +70,6 @@ export default async function AdminPage() {
             </div>
           ))}
         </div>
-
         <AdminAppointmentsTable appointments={appointments} />
       </div>
     </div>
