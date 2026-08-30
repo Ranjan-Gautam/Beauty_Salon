@@ -1,7 +1,9 @@
+import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
+import { verifySession } from "@/lib/auth";
 import AdminAppointmentsTable from "@/components/admin/AppointmentTable";
+import AdminManagement from "@/components/admin/AdminManagement";
 import {
-  IoCalendarOutline,
   IoTimeOutline,
   IoCheckmarkCircleOutline,
   IoListOutline,
@@ -11,16 +13,18 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("admin_session")?.value;
+  const session = token ? await verifySession(token) : null;
+
   const appointments = await prisma.appointment.findMany({
     include: { branch: true, service: true },
     orderBy: { createdAt: "desc" },
   });
 
-  const today = new Date().toDateString();
-
   const totalDeposits = appointments.reduce(
     (sum, a) => sum + (a.depositAmount || 0),
-    0
+    0,
   );
 
   const stats = [
@@ -71,6 +75,7 @@ export default async function AdminPage() {
           ))}
         </div>
         <AdminAppointmentsTable appointments={appointments} />
+        {session?.role === "SUPERADMIN" && <AdminManagement />}
       </div>
     </div>
   );

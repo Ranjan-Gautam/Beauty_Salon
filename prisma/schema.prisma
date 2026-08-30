@@ -7,6 +7,19 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  ADMIN
+  SUPERADMIN
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+}
+
 model Branch {
   id           String        @id @default(cuid())
   name         String
