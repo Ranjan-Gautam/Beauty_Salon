@@ -68,7 +68,9 @@ export default function AdminManagement() {
 
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm mt-8">
-      <h2 className="text-xl font-serif text-[#2c1810] mb-4">Manage Admin Access</h2>
+      <h2 className="text-xl font-serif text-[#2c1810] mb-4">
+        Manage Admin Access
+      </h2>
 
       <form onSubmit={handleInvite} className="flex flex-wrap gap-3 mb-6">
         <input
@@ -77,7 +79,7 @@ export default function AdminManagement() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="border border-[#e0cfc8] rounded px-3 py-2 text-sm flex-1 min-w-[200px]"
+          className="border border-[#e0cfc8] rounded px-3 py-2 text-sm text-[#2c1810] placeholder:text-[#2c1810]/40  flex-1 min-w-[200px]"
         />
         <input
           type="password"
@@ -86,12 +88,12 @@ export default function AdminManagement() {
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={8}
-          className="border border-[#e0cfc8] rounded px-3 py-2 text-sm flex-1 min-w-[180px]"
+          className="border border-[#e0cfc8] rounded px-3 py-2 text-sm text-[#2c1810] placeholder:text-[#2c1810]/40  flex-1 min-w-[180px]"
         />
         <select
           value={role}
           onChange={(e) => setRole(e.target.value as "ADMIN" | "SUPERADMIN")}
-          className="border border-[#e0cfc8] rounded px-3 py-2 text-sm"
+          className="border border-[#e0cfc8] rounded px-3 py-2 text-sm text-[#2c1810] placeholder:text-[#2c1810]/40 "
         >
           <option value="ADMIN">Admin</option>
           <option value="SUPERADMIN">Super Admin</option>
@@ -99,7 +101,7 @@ export default function AdminManagement() {
         <button
           type="submit"
           disabled={loading}
-          className="bg-[#c47c5a] text-white px-5 py-2 rounded text-sm hover:bg-[#b06a48] transition-colors disabled:opacity-50"
+          className="bg-[#c47c5a]  px-5 py-2 rounded text-sm text-[#2c1810] placeholder:text-[#2c1810]/40  hover:bg-[#b06a48] transition-colors disabled:opacity-50"
         >
           {loading ? "Adding..." : "Grant Access"}
         </button>
