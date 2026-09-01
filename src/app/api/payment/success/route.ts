@@ -17,9 +17,13 @@ export async function GET(req: NextRequest) {
 
     const { transaction_uuid, status, total_amount } = decoded;
 
+    // transaction_uuid was encoded as `${appointmentId}::${source}::${timestamp}`
+    const [, source] = transaction_uuid.split("::");
+    const backTo = source === "dashboard" ? "/dashboard" : "/appointment";
+
     if (status !== "COMPLETE") {
       return NextResponse.redirect(
-        `${process.env.SITE_URL}/appointment?payment=failed`
+        `${process.env.SITE_URL}${backTo}?payment=failed`
       );
     }
 
@@ -29,20 +33,25 @@ export async function GET(req: NextRequest) {
 
     if (!appointment) {
       return NextResponse.redirect(
-        `${process.env.SITE_URL}/appointment?payment=notfound`
+        `${process.env.SITE_URL}${backTo}?payment=notfound`
       );
     }
+
+    const paidAmount = parseInt(total_amount, 10);
+    const newDepositAmount = appointment.depositAmount + paidAmount;
+    const newPaymentStatus =
+      newDepositAmount >= appointment.totalAmount ? "paid" : "deposit_paid";
 
     await prisma.appointment.update({
       where: { id: appointment.id },
       data: {
-        paymentStatus: "deposit_paid",
-        depositAmount: parseInt(total_amount, 10),
+        paymentStatus: newPaymentStatus,
+        depositAmount: newDepositAmount,
       },
     });
 
     return NextResponse.redirect(
-      `${process.env.SITE_URL}/appointment?payment=success`
+      `${process.env.SITE_URL}${backTo}?payment=success`
     );
   } catch (error) {
     console.error("Payment verification failed:", error);

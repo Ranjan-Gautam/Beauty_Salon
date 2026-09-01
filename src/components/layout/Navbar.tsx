@@ -126,6 +126,13 @@ export default function Navbar() {
               </button>
               {showUserMenu && (
                 <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-[#e0cfc8] py-2">
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setShowUserMenu(false)}
+                    className="block px-4 py-2 text-sm text-[#4a3728] hover:bg-[#f9f3f0] no-underline"
+                  >
+                    Dashboard
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2 text-sm text-[#4a3728] hover:bg-[#f9f3f0]"
@@ -184,15 +191,24 @@ export default function Navbar() {
                 Appointment
               </Link>
               {user ? (
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsOpen(false);
-                  }}
-                  className="text-center text-[#4a3728] py-2"
-                >
-                  Log out ({user.name.split(" ")[0]})
-                </button>
+                <>
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setIsOpen(false)}
+                    className="text-center text-[#4a3728] py-2 no-underline"
+                  >
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsOpen(false);
+                    }}
+                    className="text-center text-[#4a3728] py-2"
+                  >
+                    Log out ({user.name.split(" ")[0]})
+                  </button>
+                </>
               ) : (
                 <button
                   onClick={() => {

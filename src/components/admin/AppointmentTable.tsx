@@ -2,10 +2,13 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
   IoSearchOutline,
   IoLogOutOutline,
   IoAddOutline,
+  IoQrCodeOutline,
+  IoCloseOutline,
 } from "react-icons/io5";
 
 interface ExtraService {
@@ -74,6 +77,7 @@ export default function AdminAppointmentsTable({
   const [confirmCancelId, setConfirmCancelId] = useState<string | null>(null);
   const [addingServiceFor, setAddingServiceFor] = useState<string | null>(null);
   const [pickedServiceId, setPickedServiceId] = useState("");
+  const [checkoutAppointment, setCheckoutAppointment] = useState<Appointment | null>(null);
 
   function showToast(message: string, type: "success" | "error") {
     setToast({ message, type });
@@ -103,6 +107,29 @@ export default function AdminAppointmentsTable({
     }
   }
 
+  async function markFullyPaid(id: string) {
+    setUpdatingId(id);
+    try {
+      const res = await fetch(`/api/admin/appointments/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentStatus: "paid" }),
+      });
+
+      if (res.ok) {
+        showToast("Marked as fully paid.", "success");
+        setCheckoutAppointment(null);
+        router.refresh();
+      } else {
+        showToast("Failed to update payment.", "error");
+      }
+    } catch {
+      showToast("Something went wrong.", "error");
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
   async function addExtraService(appointmentId: string) {
     if (!pickedServiceId) return;
     setUpdatingId(appointmentId);
@@ -113,7 +140,7 @@ export default function AdminAppointmentsTable({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ serviceId: pickedServiceId }),
-        },
+        }
       );
 
       if (res.ok) {
@@ -147,6 +174,10 @@ export default function AdminAppointmentsTable({
       return matchesTab && matchesSearch;
     });
   }, [appointments, activeTab, search]);
+
+  const checkoutBalance = checkoutAppointment
+    ? checkoutAppointment.totalAmount - checkoutAppointment.depositAmount
+    : 0;
 
   return (
     <div>
@@ -195,7 +226,7 @@ export default function AdminAppointmentsTable({
 
       {/* Table */}
       <div className="bg-white rounded-lg overflow-x-auto border border-[#E2E5EA]">
-        <table className="w-full text-sm min-w-[1200px]">
+        <table className="w-full text-sm min-w-[1250px]">
           <thead>
             <tr className="bg-[#F4F5F7] text-left text-[#4A5568] border-b border-[#E2E5EA]">
               <th className="px-5 py-3 font-medium text-xs">Name</th>
@@ -231,53 +262,51 @@ export default function AdminAppointmentsTable({
                       <ul className="mt-1 space-y-0.5">
                         {extras.map((ex) => (
                           <li key={ex.id} className="text-xs text-[#2B6CB0]">
-                            + {ex.service.name} (Rs. {ex.price.toLocaleString()}
-                            )
+                            + {ex.service.name} (Rs. {ex.price.toLocaleString()})
                           </li>
                         ))}
                       </ul>
                     )}
-                    {a.status !== "cancelled" &&
-                      (addingServiceFor === a.id ? (
-                        <div className="mt-2 flex items-center gap-1.5">
-                          <select
-                            value={pickedServiceId}
-                            onChange={(e) => setPickedServiceId(e.target.value)}
-                            className="border border-[#E2E5EA] rounded px-2 py-1 text-xs text-[#1A202C] focus:outline-none focus:ring-1 focus:ring-[#2B6CB0]"
-                          >
-                            <option value="">Select service</option>
-                            {services.map((s) => (
-                              <option key={s.id} value={s.id}>
-                                {s.name} — Rs. {s.price.toLocaleString()}
-                              </option>
-                            ))}
-                          </select>
-                          <button
-                            disabled={updatingId === a.id || !pickedServiceId}
-                            onClick={() => addExtraService(a.id)}
-                            className="text-xs px-2 py-1 rounded bg-[#2B6CB0] text-white hover:bg-[#25599A] disabled:opacity-50"
-                          >
-                            Add
-                          </button>
-                          <button
-                            onClick={() => {
-                              setAddingServiceFor(null);
-                              setPickedServiceId("");
-                            }}
-                            className="text-xs text-[#718096] hover:text-[#1A202C]"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => setAddingServiceFor(a.id)}
-                          className="mt-1.5 flex items-center gap-1 text-xs text-[#2B6CB0] hover:text-[#25599A] font-medium"
+                    {addingServiceFor === a.id ? (
+                      <div className="mt-2 flex items-center gap-1.5">
+                        <select
+                          value={pickedServiceId}
+                          onChange={(e) => setPickedServiceId(e.target.value)}
+                          className="border border-[#E2E5EA] rounded px-2 py-1 text-xs text-[#1A202C] focus:outline-none focus:ring-1 focus:ring-[#2B6CB0]"
                         >
-                          <IoAddOutline size={13} />
-                          Add service
+                          <option value="">Select service</option>
+                          {services.map((s) => (
+                            <option key={s.id} value={s.id}>
+                              {s.name} — Rs. {s.price.toLocaleString()}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          disabled={updatingId === a.id || !pickedServiceId}
+                          onClick={() => addExtraService(a.id)}
+                          className="text-xs px-2 py-1 rounded bg-[#2B6CB0] text-white hover:bg-[#25599A] disabled:opacity-50"
+                        >
+                          Add
                         </button>
-                      ))}
+                        <button
+                          onClick={() => {
+                            setAddingServiceFor(null);
+                            setPickedServiceId("");
+                          }}
+                          className="text-xs text-[#718096] hover:text-[#1A202C]"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setAddingServiceFor(a.id)}
+                        className="mt-1.5 flex items-center gap-1 text-xs text-[#2B6CB0] hover:text-[#25599A] font-medium"
+                      >
+                        <IoAddOutline size={13} />
+                        Add service
+                      </button>
+                    )}
                   </td>
                   <td className="px-5 py-3.5 text-[#4A5568]">
                     {a.branch.name}
@@ -336,6 +365,16 @@ export default function AdminAppointmentsTable({
                           Cancel
                         </button>
                       )}
+                      {balance > 0 && a.status !== "cancelled" && (
+                        <button
+                          disabled={updatingId === a.id}
+                          onClick={() => setCheckoutAppointment(a)}
+                          className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded bg-[#E3EDF8] text-[#2B6CB0] hover:bg-[#D5E4F5] transition-colors disabled:opacity-50 font-medium"
+                        >
+                          <IoQrCodeOutline size={13} />
+                          Collect balance
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -378,6 +417,78 @@ export default function AdminAppointmentsTable({
                 className="flex-1 py-2 rounded-md bg-[#C53030] text-white hover:bg-[#A82A2A] transition-colors text-sm font-medium"
               >
                 Cancel appointment
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Checkout modal */}
+      {checkoutAppointment && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-6 py-8">
+          <div className="bg-white rounded-lg max-w-sm w-full border border-[#E2E5EA] max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#EDF0F3]">
+              <h3 className="text-base font-semibold text-[#1A202C]">
+                Collect balance
+              </h3>
+              <button
+                onClick={() => setCheckoutAppointment(null)}
+                className="text-[#A0AEC0] hover:text-[#1A202C]"
+              >
+                <IoCloseOutline size={20} />
+              </button>
+            </div>
+
+            <div className="p-6">
+              <p className="text-sm text-[#4A5568] mb-1">
+                {checkoutAppointment.name}
+              </p>
+              <p className="text-xs text-[#A0AEC0] mb-4">
+                {checkoutAppointment.service.name}
+                {(checkoutAppointment.extraServices ?? []).map((ex) => (
+                  <span key={ex.id}>, {ex.service.name}</span>
+                ))}
+              </p>
+
+              <div className="bg-[#F4F5F7] rounded-md p-3 mb-5 text-sm">
+                <div className="flex justify-between text-[#4A5568] mb-1">
+                  <span>Total</span>
+                  <span>Rs. {checkoutAppointment.totalAmount.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-[#4A5568] mb-1">
+                  <span>Already paid</span>
+                  <span>Rs. {checkoutAppointment.depositAmount.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-[#B7791F] font-semibold pt-1 border-t border-[#E2E5EA] mt-1">
+                  <span>Balance due</span>
+                  <span>Rs. {checkoutBalance.toLocaleString()}</span>
+                </div>
+              </div>
+
+              <div className="flex justify-center mb-5">
+                <div className="relative w-56 h-56 rounded-md overflow-hidden border border-[#E2E5EA]">
+                  <Image
+                    src="/payment-qr.jpeg"
+                    alt="Payment QR code"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              </div>
+
+              <p className="text-xs text-[#718096] text-center mb-5">
+                Have the customer scan to pay the remaining balance, then
+                confirm below.
+              </p>
+
+              <button
+                disabled={updatingId === checkoutAppointment.id}
+                onClick={() => markFullyPaid(checkoutAppointment.id)}
+                className="w-full bg-[#14181F] text-white py-2.5 rounded-md text-sm font-medium hover:bg-[#1F2532] transition-colors disabled:opacity-50"
+              >
+                {updatingId === checkoutAppointment.id
+                  ? "Updating..."
+                  : "Mark as fully paid"}
               </button>
             </div>
           </div>

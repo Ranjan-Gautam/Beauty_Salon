@@ -4,7 +4,7 @@ import { generateEsewaSignature } from "@/lib/esewa";
 
 export async function POST(req: NextRequest) {
   try {
-    const { appointmentId, amount } = await req.json();
+    const { appointmentId, amount, redirectTo } = await req.json();
 
     const appointment = await prisma.appointment.findUnique({
       where: { id: appointmentId },
@@ -17,7 +17,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const transaction_uuid = `${appointmentId}-${Date.now()}`;
+    // Encode where the customer should land after payment (default: /appointment)
+    const source = redirectTo === "dashboard" ? "dashboard" : "appointment";
+    const transaction_uuid = `${appointmentId}::${source}::${Date.now()}`;
     const total_amount = amount.toString();
     const product_code = process.env.ESEWA_PRODUCT_CODE!;
 

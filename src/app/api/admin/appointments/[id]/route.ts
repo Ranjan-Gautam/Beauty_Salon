@@ -16,11 +16,7 @@ export async function PATCH(
     }
 
     const { id } = await params;
-    const { status, reason } = await req.json();
-
-    if (!["pending", "confirmed", "cancelled"].includes(status)) {
-      return NextResponse.json({ error: "Invalid status" }, { status: 400 });
-    }
+    const { status, reason, paymentStatus } = await req.json();
 
     const existing = await prisma.appointment.findUnique({ where: { id } });
     if (!existing) {
@@ -31,10 +27,34 @@ export async function PATCH(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    if (paymentStatus) {
+      if (!["unpaid", "deposit_paid", "paid"].includes(paymentStatus)) {
+        return NextResponse.json({ error: "Invalid payment status" }, { status: 400 });
+      }
+      const updated = await prisma.appointment.update({
+        where: { id },
+        data: { paymentStatus },
+        include: {
+          branch: true,
+          service: true,
+          extraServices: { include: { service: true } },
+        },
+      });
+      return NextResponse.json({ success: true, appointment: updated });
+    }
+
+    if (!["pending", "confirmed", "cancelled"].includes(status)) {
+      return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+    }
+
     const updated = await prisma.appointment.update({
       where: { id },
       data: { status },
-      include: { branch: true, service: true },
+      include: {
+        branch: true,
+        service: true,
+        extraServices: { include: { service: true } },
+      },
     });
 
     const emailData = {
@@ -64,7 +84,7 @@ export async function PATCH(
 
     return NextResponse.json({ success: true, appointment: updated });
   } catch (error) {
-    console.error("Failed to update status:", error);
+    console.error("Failed to update appointment:", error);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

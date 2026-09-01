@@ -1,64 +1,35 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json();
-    const { name, email, phone, service, branch, date, time, message } = body;
-    if (!name || !email || !phone || !service || !branch || !date || !time) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
-    }
-    const branchRecord = await prisma.branch.findFirst({
-      where: { name: branch },
-    });
-    const serviceRecord = await prisma.service.findFirst({
-      where: { name: service },
-    });
-    if (!branchRecord || !serviceRecord) {
-      return NextResponse.json(
-        { error: "Invalid branch or service" },
-        { status: 400 }
-      );
-    }
-    const conflict = await prisma.appointment.findFirst({
-      where: {
-        branchId: branchRecord.id,
-        serviceId: serviceRecord.id,
-        date: new Date(date),
-        time,
-        status: { in: ["pending", "confirmed"] },
-      },
-    });
-    if (conflict) {
-      return NextResponse.json(
-        {
-          error:
-            "This time slot is already booked for the selected service and branch. Please choose a different time.",
-        },
-        { status: 409 }
-      );
-    }
-    const appointment = await prisma.appointment.create({
-      data: {
-        name,
-        email,
-        phone,
-        date: new Date(date),
-        time,
-        message: message || null,
-        branchId: branchRecord.id,
-        serviceId: serviceRecord.id,
-        totalAmount: serviceRecord.price,
-      },
-    });
-    return NextResponse.json({ success: true, appointment }, { status: 201 });
-  } catch (error) {
-    console.error("Appointment creation failed:", error);
-    return NextResponse.json(
-      { error: "Something went wrong" },
-      { status: 500 }
-    );
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { auth } from "@/lib/auth-google";
+import { verifyUserSession } from "@/lib/auth";
+import { PrismaClient } from "@/generated/prisma";
+
+const prisma = new PrismaClient();
+
+export async function GET() {
+  const googleSession = await auth();
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get("user_session")?.value;
+  const emailSession = token ? await verifyUserSession(token) : null;
+
+  const email = googleSession?.user?.email || emailSession?.email;
+
+  if (!email) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
+
+  const appointments = await prisma.appointment.findMany({
+    where: { email },
+    include: {
+      branch: true,
+      service: true,
+      extraServices: {
+        include: { service: true },
+      },
+    },
+    orderBy: { date: "desc" },
+  });
+
+  return NextResponse.json({ appointments });
 }
