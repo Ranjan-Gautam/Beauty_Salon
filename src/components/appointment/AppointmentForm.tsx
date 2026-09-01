@@ -384,7 +384,7 @@ export default function AppointmentForm() {
                             : "bg-white text-[#2c1810] border-[#e0cfc8] hover:border-[#c47c5a]"
                         }`}
                       >
-                        {s.name} — Rs. {s.price.toLocaleString()}
+                        {s.name} — Rs. {(s.price ?? 0).toLocaleString()}
                       </button>
                     ))}
                   </div>

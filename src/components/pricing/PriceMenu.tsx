@@ -1,31 +1,31 @@
 const leftPricing = [
   {
     service: "Foot Massage",
-    price: "$49",
+    price: "Rs.1000",
     description:
       "A relaxing reflexology session that relieves tension and refreshes tired feet.",
   },
   {
     service: "Pedicure",
-    price: "$39",
+    price: "Rs.1000",
     description:
       "Complete foot care with exfoliation, shaping, and a long-lasting polish.",
   },
   {
     service: "Manicure",
-    price: "$25",
+    price: "Rs.500",
     description:
       "Hand and nail care that leaves your fingertips neat and polished.",
   },
   {
     service: "Nail Polish",
-    price: "$15",
+    price: "Rs.800",
     description:
       "A fresh, precise coat of color applied in the shade you love.",
   },
   {
     service: "Body Scrub",
-    price: "$60",
+    price: "Rs.2000",
     description:
       "A full-body exfoliation treatment that softens and renews your skin.",
   },
@@ -34,31 +34,31 @@ const leftPricing = [
 const rightPricing = [
   {
     service: "Body Massage",
-    price: "$75",
+    price: "Rs.2500",
     description:
       "A full-body massage designed to release tension and restore balance.",
   },
   {
     service: "Oil Therapy",
-    price: "$80",
+    price: "Rs.2000",
     description:
       "Warm oil therapy that nourishes skin and eases muscle stiffness.",
   },
   {
     service: "Hair & Beauty",
-    price: "$60",
+    price: "Rs.3000",
     description:
       "A styling and care session tailored to your hair type and goals.",
   },
   {
     service: "Face Treatment",
-    price: "$85",
+    price: "Rs.3500",
     description:
       "A deep facial treatment that cleanses, hydrates, and revitalizes skin.",
   },
   {
     service: "Face Mask",
-    price: "$55",
+    price: "Rs.1500",
     description:
       "A calming mask session that leaves your complexion refreshed and glowing.",
   },

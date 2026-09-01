@@ -75,7 +75,7 @@ export default function TreatmentSection() {
                   <div className="flex gap-3">
                     <Phone size={20} className="text-[#c78d68] shrink-0" />
                     <span className="text-black text-sm md:text-base">
-                      +1 234 789 4545
+                      +977 9766464003
                     </span>
                   </div>
 
@@ -85,7 +85,7 @@ export default function TreatmentSection() {
                       className="text-[#c78d68] shrink-0"
                     />
                     <span className="text-black text-sm md:text-base">
-                      +1 909 850 2266
+                      +977 9861746859
                     </span>
                   </div>
 
