@@ -39,72 +39,78 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f9f3f0] flex items-center justify-center px-6">
+    <div className="min-h-screen bg-[#F4F5F7] flex items-center justify-center px-6">
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-2xl p-10 w-full max-w-sm shadow-lg border-t-4 border-[#c47c5a]"
+        className="bg-white rounded-lg p-9 w-full max-w-sm border border-[#E2E5EA]"
       >
-        <div className="w-14 h-14 rounded-full bg-[#f9f3f0] flex items-center justify-center mx-auto mb-5">
-          <IoLockClosedOutline size={24} className="text-[#c47c5a]" />
+        <div className="w-11 h-11 rounded-md bg-[#14181F] flex items-center justify-center mb-6">
+          <IoLockClosedOutline size={20} className="text-white" />
         </div>
-        <h1 className="text-2xl font-serif text-[#2c1810] mb-1 text-center">
-          Admin Access
+        <h1 className="text-xl font-semibold text-[#1A202C] mb-1">
+          Admin console
         </h1>
-        <p className="text-sm text-[#2c1810]/60 text-center mb-8">
-          Enter your credentials to continue
+        <p className="text-sm text-[#718096] mb-7">
+          Sign in with your admin credentials
         </p>
 
+        <label className="block text-xs font-medium text-[#4A5568] mb-1.5">
+          Email
+        </label>
         <div className="relative mb-4">
           <IoMailOutline
-            size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#c47c5a]"
+            size={16}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A0AEC0]"
           />
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
+            placeholder="you@beautysalon.com"
             required
-            className="w-full bg-[#f9f3f0]/50 border border-[#e0cfc8] rounded pl-10 pr-4 py-3 text-[#2c1810] focus:outline-none focus:ring-2 focus:ring-[#c47c5a]/30 focus:border-[#c47c5a]"
+            className="w-full bg-white border border-[#E2E5EA] rounded-md pl-9 pr-3 py-2.5 text-sm text-[#1A202C] placeholder:text-[#A0AEC0] focus:outline-none focus:ring-2 focus:ring-[#2B6CB0]/25 focus:border-[#2B6CB0]"
           />
         </div>
 
-        <div className="relative mb-2">
+        <label className="block text-xs font-medium text-[#4A5568] mb-1.5">
+          Password
+        </label>
+        <div className="relative mb-1">
           <IoLockClosedOutline
-            size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#c47c5a]"
+            size={16}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A0AEC0]"
           />
           <input
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
+            placeholder="••••••••"
             required
-            className="w-full bg-[#f9f3f0]/50 border border-[#e0cfc8] rounded pl-10 pr-10 py-3 text-[#2c1810] focus:outline-none focus:ring-2 focus:ring-[#c47c5a]/30 focus:border-[#c47c5a]"
+            className="w-full bg-white border border-[#E2E5EA] rounded-md pl-9 pr-10 py-2.5 text-sm text-[#1A202C] placeholder:text-[#A0AEC0] focus:outline-none focus:ring-2 focus:ring-[#2B6CB0]/25 focus:border-[#2B6CB0]"
           />
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#c47c5a]"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A0AEC0] hover:text-[#4A5568]"
           >
             {showPassword ? (
-              <IoEyeOffOutline size={18} />
+              <IoEyeOffOutline size={16} />
             ) : (
-              <IoEyeOutline size={18} />
+              <IoEyeOutline size={16} />
             )}
           </button>
         </div>
 
         {error && (
-          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+          <p className="text-[#C53030] text-sm mt-3">{error}</p>
         )}
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#c47c5a] text-white py-3 rounded hover:bg-[#a8623f] transition-colors font-medium mt-6 disabled:opacity-60"
+          className="w-full bg-[#14181F] text-white py-2.5 rounded-md hover:bg-[#1F2532] transition-colors text-sm font-medium mt-6 disabled:opacity-60"
         >
-          {loading ? "Verifying..." : "Login"}
+          {loading ? "Verifying..." : "Sign in"}
         </button>
       </form>
     </div>

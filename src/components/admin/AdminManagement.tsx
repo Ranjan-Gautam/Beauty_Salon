@@ -7,13 +7,21 @@ interface AdminUser {
   email: string;
   role: "ADMIN" | "SUPERADMIN";
   createdAt: string;
+  branch?: { id: string; name: string } | null;
+}
+
+interface BranchOption {
+  id: string;
+  name: string;
 }
 
 export default function AdminManagement() {
   const [admins, setAdmins] = useState<AdminUser[]>([]);
+  const [branches, setBranches] = useState<BranchOption[]>([]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"ADMIN" | "SUPERADMIN">("ADMIN");
+  const [branchId, setBranchId] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -25,32 +33,53 @@ export default function AdminManagement() {
     }
   };
 
+  const loadBranches = async () => {
+    const res = await fetch("/api/branches");
+    if (res.ok) {
+      const data = await res.json();
+      setBranches(data.branches ?? data);
+    }
+  };
+
   useEffect(() => {
     loadAdmins();
+    loadBranches();
   }, []);
 
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (role === "ADMIN" && !branchId) {
+      setMessage("Select a branch for this admin.");
+      return;
+    }
+
     setLoading(true);
     setMessage("");
 
     const res = await fetch("/api/admin/invite", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, role }),
+      body: JSON.stringify({
+        email,
+        password,
+        role,
+        branchId: role === "ADMIN" ? branchId : undefined,
+      }),
     });
 
     const data = await res.json();
     setLoading(false);
 
     if (res.ok) {
-      setMessage(`Added ${data.admin.email} as ${data.admin.role}`);
+      setMessage(`Added ${data.admin.email} as ${data.admin.role}.`);
       setEmail("");
       setPassword("");
       setRole("ADMIN");
+      setBranchId("");
       loadAdmins();
     } else {
-      setMessage(data.error || "Something went wrong");
+      setMessage(data.error || "Something went wrong.");
     }
   };
 
@@ -62,24 +91,30 @@ export default function AdminManagement() {
       loadAdmins();
     } else {
       const data = await res.json();
-      alert(data.error || "Failed to remove");
+      alert(data.error || "Failed to remove.");
     }
   };
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm mt-8">
-      <h2 className="text-xl font-serif text-[#2c1810] mb-4">
-        Manage Admin Access
+    <div className="bg-white rounded-lg border border-[#E2E5EA] p-6 mt-8">
+      <h2 className="text-base font-semibold text-[#1A202C] mb-1">
+        Admin access
       </h2>
+      <p className="text-sm text-[#718096] mb-5">
+        Grant branch managers access to their location&apos;s appointments.
+      </p>
 
-      <form onSubmit={handleInvite} className="flex flex-wrap gap-3 mb-6">
+      <form
+        onSubmit={handleInvite}
+        className="flex flex-wrap gap-2.5 mb-6 items-start"
+      >
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="border border-[#e0cfc8] rounded px-3 py-2 text-sm text-[#2c1810] placeholder:text-[#2c1810]/40  flex-1 min-w-[200px]"
+          className="border border-[#E2E5EA] rounded-md px-3 py-2 text-sm text-[#1A202C] placeholder:text-[#A0AEC0] flex-1 min-w-[190px] focus:outline-none focus:ring-2 focus:ring-[#2B6CB0]/25 focus:border-[#2B6CB0]"
         />
         <input
           type="password"
@@ -88,37 +123,61 @@ export default function AdminManagement() {
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={8}
-          className="border border-[#e0cfc8] rounded px-3 py-2 text-sm text-[#2c1810] placeholder:text-[#2c1810]/40  flex-1 min-w-[180px]"
+          className="border border-[#E2E5EA] rounded-md px-3 py-2 text-sm text-[#1A202C] placeholder:text-[#A0AEC0] flex-1 min-w-[170px] focus:outline-none focus:ring-2 focus:ring-[#2B6CB0]/25 focus:border-[#2B6CB0]"
         />
         <select
           value={role}
-          onChange={(e) => setRole(e.target.value as "ADMIN" | "SUPERADMIN")}
-          className="border border-[#e0cfc8] rounded px-3 py-2 text-sm text-[#2c1810] placeholder:text-[#2c1810]/40 "
+          onChange={(e) => {
+            const newRole = e.target.value as "ADMIN" | "SUPERADMIN";
+            setRole(newRole);
+            if (newRole === "SUPERADMIN") setBranchId("");
+          }}
+          className="border border-[#E2E5EA] rounded-md px-3 py-2 text-sm text-[#1A202C] focus:outline-none focus:ring-2 focus:ring-[#2B6CB0]/25 focus:border-[#2B6CB0]"
         >
-          <option value="ADMIN">Admin</option>
-          <option value="SUPERADMIN">Super Admin</option>
+          <option value="ADMIN">Branch admin</option>
+          <option value="SUPERADMIN">Super admin</option>
         </select>
+        {role === "ADMIN" && (
+          <select
+            value={branchId}
+            onChange={(e) => setBranchId(e.target.value)}
+            required
+            className="border border-[#E2E5EA] rounded-md px-3 py-2 text-sm text-[#1A202C] focus:outline-none focus:ring-2 focus:ring-[#2B6CB0]/25 focus:border-[#2B6CB0]"
+          >
+            <option value="">Select branch</option>
+            {branches.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name}
+              </option>
+            ))}
+          </select>
+        )}
         <button
           type="submit"
           disabled={loading}
-          className="bg-[#c47c5a]  px-5 py-2 rounded text-sm text-[#2c1810] placeholder:text-[#2c1810]/40  hover:bg-[#b06a48] transition-colors disabled:opacity-50"
+          className="bg-[#14181F] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#1F2532] transition-colors disabled:opacity-50"
         >
-          {loading ? "Adding..." : "Grant Access"}
+          {loading ? "Adding..." : "Grant access"}
         </button>
       </form>
 
-      {message && <p className="text-sm text-[#2c1810]/70 mb-4">{message}</p>}
+      {message && (
+        <p className="text-sm text-[#718096] mb-4">{message}</p>
+      )}
 
-      <div className="divide-y divide-[#e0cfc8]">
+      <div className="divide-y divide-[#EDF0F3] border-t border-[#EDF0F3]">
         {admins.map((a) => (
           <div key={a.id} className="flex items-center justify-between py-3">
             <div>
-              <p className="text-sm text-[#2c1810]">{a.email}</p>
-              <p className="text-xs text-[#2c1810]/50">{a.role}</p>
+              <p className="text-sm text-[#1A202C]">{a.email}</p>
+              <p className="text-xs text-[#718096]">
+                {a.role === "SUPERADMIN" ? "Super admin" : "Branch admin"}
+                {a.branch ? ` · ${a.branch.name}` : ""}
+              </p>
             </div>
             <button
               onClick={() => handleRemove(a.id, a.email)}
-              className="text-xs text-red-500 hover:text-red-700"
+              className="text-xs text-[#C53030] hover:text-[#A82A2A] font-medium"
             >
               Remove
             </button>

@@ -14,8 +14,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const admins = await prisma.admin.findMany({
-    select: { id: true, email: true, role: true, createdAt: true },
+    const admins = await prisma.admin.findMany({
+    select: {
+      id: true,
+      email: true,
+      role: true,
+      createdAt: true,
+      branch: { select: { id: true, name: true } },
+    },
     orderBy: { createdAt: 'desc' },
   });
 

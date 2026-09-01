@@ -16,9 +16,14 @@ import { signIn } from "next-auth/react";
 interface AuthModalProps {
   onClose: () => void;
   onSuccess: (user: { name: string; email: string }) => void;
+  redirectTo?: string;
 }
 
-export default function AuthModal({ onClose, onSuccess }: AuthModalProps) {
+export default function AuthModal({
+  onClose,
+  onSuccess,
+  redirectTo = "/",
+}: AuthModalProps) {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -262,7 +267,7 @@ export default function AuthModal({ onClose, onSuccess }: AuthModalProps) {
 
           <button
             type="button"
-            onClick={() => signIn("google", { callbackUrl: "/" })}
+            onClick={() => signIn("google", { callbackUrl: redirectTo })}
             className="w-full border border-[#e0cfc8] rounded-lg py-2.5 flex items-center justify-center gap-2 text-sm text-[#2c1810] hover:bg-[#f9f3f0] transition-colors"
           >
             <FcGoogle size={18} />

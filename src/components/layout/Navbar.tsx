@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useSession, signOut as googleSignOut } from "next-auth/react";
 import { HiMenu, HiX } from "react-icons/hi";
 import { IoPersonCircleOutline } from "react-icons/io5";
@@ -26,6 +26,8 @@ interface AuthUser {
 
 export default function Navbar() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const { data: googleSession } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -37,6 +39,12 @@ export default function Navbar() {
       .then((res) => res.json())
       .then((data) => setEmailUser(data.user));
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get("authRequired") === "appointment") {
+      setShowAuthModal(true);
+    }
+  }, [searchParams]);
 
   // Google session takes priority if present, otherwise fall back to email/password session
   const user: AuthUser | null = googleSession?.user
@@ -204,7 +212,18 @@ export default function Navbar() {
       {showAuthModal && (
         <AuthModal
           onClose={() => setShowAuthModal(false)}
-          onSuccess={(u) => setEmailUser(u)}
+          redirectTo={
+            searchParams.get("authRequired") === "appointment"
+              ? "/appointment"
+              : "/"
+          }
+          onSuccess={(u) => {
+            setEmailUser(u);
+            setShowAuthModal(false);
+            if (searchParams.get("authRequired") === "appointment") {
+              router.push("/appointment");
+            }
+          }}
         />
       )}
     </>

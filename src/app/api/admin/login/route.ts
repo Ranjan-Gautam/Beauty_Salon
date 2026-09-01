@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
     adminId: admin.id,
     email: admin.email,
     role: admin.role,
+    branchId: admin.branchId,
   });
 
   const res = NextResponse.json({ success: true });

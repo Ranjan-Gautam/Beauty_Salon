@@ -6,6 +6,7 @@ export interface AdminSession {
   adminId: string;
   email: string;
   role: 'ADMIN' | 'SUPERADMIN';
+  branchId: string | null;
 }
 
 export async function signSession(payload: AdminSession) {

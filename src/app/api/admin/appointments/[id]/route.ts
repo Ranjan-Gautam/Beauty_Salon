@@ -1,17 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendConfirmationEmail, sendCancellationEmail } from "@/lib/sendEmail";
+import { verifySession } from "@/lib/auth";
 
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const token = req.cookies.get("admin_session")?.value;
+    const session = token ? await verifySession(token) : null;
+
+    if (!session || (session.role !== "ADMIN" && session.role !== "SUPERADMIN")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { id } = await params;
     const { status, reason } = await req.json();
 
     if (!["pending", "confirmed", "cancelled"].includes(status)) {
       return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+    }
+
+    const existing = await prisma.appointment.findUnique({ where: { id } });
+    if (!existing) {
+      return NextResponse.json({ error: "Appointment not found" }, { status: 404 });
+    }
+
+    if (session.role === "ADMIN" && existing.branchId !== session.branchId) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const updated = await prisma.appointment.update({

@@ -15,10 +15,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Only SUPERADMIN can invite admins' }, { status: 403 });
   }
 
-  const { email, password, role } = await req.json();
+  const { email, password, role, branchId } = await req.json();
 
   if (!email || !password) {
     return NextResponse.json({ error: 'Email and password required' }, { status: 400 });
+  }
+
+  const finalRole = role === 'SUPERADMIN' ? 'SUPERADMIN' : 'ADMIN';
+
+  if (finalRole === 'ADMIN' && !branchId) {
+    return NextResponse.json({ error: 'Branch is required for ADMIN role' }, { status: 400 });
+  }
+
+  if (finalRole === 'ADMIN') {
+    const branch = await prisma.branch.findUnique({ where: { id: branchId } });
+    if (!branch) {
+      return NextResponse.json({ error: 'Invalid branch' }, { status: 400 });
+    }
   }
 
   const existing = await prisma.admin.findUnique({ where: { email } });
@@ -28,8 +41,13 @@ export async function POST(req: NextRequest) {
 
   const hashed = await bcrypt.hash(password, 10);
   const admin = await prisma.admin.create({
-    data: { email, password: hashed, role: role === 'SUPERADMIN' ? 'SUPERADMIN' : 'ADMIN' },
+    data: {
+      email,
+      password: hashed,
+      role: finalRole,
+      branchId: finalRole === 'ADMIN' ? branchId : null,
+    },
   });
 
-  return NextResponse.json({ success: true, admin: { email: admin.email, role: admin.role } });
+  return NextResponse.json({ success: true, admin: { email: admin.email, role: admin.role, branchId: admin.branchId } });
 }

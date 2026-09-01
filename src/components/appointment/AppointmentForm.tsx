@@ -126,7 +126,8 @@ export default function AppointmentForm() {
       });
 
       if (!res.ok) {
-        throw new Error("Failed to submit appointment");
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Failed to submit appointment");
       }
 
       const data = await res.json();
