@@ -64,11 +64,11 @@ export default function Navbar() {
       <nav className="w-full bg-[#f9f3f0] border-b border-[#e0cfc8] px-4 md:px-8 h-18 flex items-center justify-between md:justify-start gap-8 sticky top-0 z-50">
         <Link href="/" className="flex items-center gap-px no-underline">
           <Image
-            src="/logo-beauty-salon-1.png"
+            src="/logo-beauty-salon-1.jpg"
             alt="Beauty Salon"
-            width={200}
-            height={200}
-            className="w-32 md:w-[200px] h-auto md:ml-30"
+            width={250}
+            height={250}
+            className="w-32 md:w-[250px] h-auto md:ml-30"
           />
         </Link>
 

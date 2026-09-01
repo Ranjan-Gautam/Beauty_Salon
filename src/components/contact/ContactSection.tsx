@@ -5,7 +5,7 @@ export default function ContactSection() {
     {
       icon: <FiSend size={32} />,
       title: "Our Location",
-      text: "2560 Hickory Lane, DC 20904",
+      text: "Kathmandu, Nepal",
     },
     {
       icon: <FiClock size={32} />,
@@ -20,7 +20,7 @@ export default function ContactSection() {
     {
       icon: <FiPhone size={32} />,
       title: "Call Us",
-      text: "800 2345 7890",
+      text: "+977 9766464003",
     },
   ];
 

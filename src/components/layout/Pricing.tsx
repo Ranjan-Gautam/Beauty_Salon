@@ -3,31 +3,31 @@ import Image from "next/image";
 const pricing = [
   {
     service: "Foot Massage",
-    price: "$49",
+    price: "Rs.1000",
     description:
       "A soothing reflexology session that eases tension and leaves your feet feeling renewed.",
   },
   {
     service: "Pedicure",
-    price: "$39",
+    price: "Rs.1000",
     description:
       "Complete foot care with exfoliation, shaping, and a polish that lasts.",
   },
   {
     service: "Manicure",
-    price: "$25",
+    price: "Rs.500",
     description:
       "Hand and nail care designed to leave you polished, neat, and camera-ready.",
   },
   {
     service: "Nail Polish",
-    price: "$15",
+    price: "Rs.800",
     description:
       "A fresh coat in the shade of your choice, applied with precision.",
   },
   {
     service: "Body Scrub",
-    price: "$60",
+    price: "Rs.2000",
     description:
       "A full-body exfoliation that softens skin and washes away the week.",
   },
